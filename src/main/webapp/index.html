@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#e90086">
+  <meta name="description" content="ELESOMI - Gestión de pasajeros. La calidad por los aires.">
+  <title>ELESOMI - Pasajeros</title>
+  <link rel="icon" href="assets/elesomi-symbol.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/styles.css?v=110">
+  <script src="assets/app.js?v=110" defer></script>
+</head>
+<body>
+  <header class="site-header"><div class="container header-layout">
+    <a class="brand" href="./" aria-label="ELESOMI - Inicio"><img src="assets/elesomi-symbol.svg" alt="" width="62" height="62"><span class="brand-words"><strong>ELESOMI<span class="brand-dot">.</span></strong><small>LA CALIDAD POR LOS AIRES</small></span></a>
+    <div class="header-mark"><span class="blink-square" aria-hidden="true"></span>GESTIÓN DE PASAJEROS <span class="edition">/ 01</span></div>
+  </div></header>
+  <main class="container main-content">
+    <section class="intro"><div class="intro-copy"><p class="kicker"><span class="kicker-square" aria-hidden="true"></span> DIRECTORIO DE PASAJEROS</p><h1>PERSONAS<span class="accent">.</span><br>EN MOVIMIENTO<span class="accent">_</span></h1><p class="intro-note">Administra la información de tus pasajeros desde un solo lugar.</p></div><button type="button" id="nuevo" class="button button-primary"><svg class="icon" aria-hidden="true"><use href="assets/icons.svg#plus"></use></svg> NUEVO PASAJERO</button></section>
+    <section class="directory" aria-label="Directorio de pasajeros">
+      <div class="directory-head"><div class="directory-title"><span class="section-index">01 / DIRECTORIO</span><h2>PASAJEROS</h2></div><div class="search-area"><label for="busqueda" class="search-label">BUSCAR PASAJERO</label><div class="search-control"><svg class="icon" aria-hidden="true"><use href="assets/icons.svg#search"></use></svg><input id="busqueda" type="search" placeholder="Nombre, apellido o documento" autocomplete="off" aria-label="Buscar pasajero"></div></div></div>
+      <div class="table-scroll"><table><thead><tr><th scope="col">PASAJERO</th><th scope="col">DOCUMENTO</th><th scope="col">CORREO</th><th scope="col">TELÉFONO</th><th scope="col">NACIONALIDAD</th><th scope="col">ACCIONES</th></tr></thead><tbody id="filas"><tr><td colspan="6" class="empty">CARGANDO PASAJEROS...</td></tr></tbody></table></div>
+      <div class="directory-foot"><span id="resumen" role="status" aria-live="polite">CARGANDO...</span><nav class="pagination" aria-label="Paginación"><button id="anterior" type="button" class="icon-button page-arrow" aria-label="Página anterior" title="Anterior"><svg class="icon" aria-hidden="true"><use href="assets/icons.svg#arrow-left"></use></svg></button><span id="pagina">01 / 01</span><button id="siguiente" type="button" class="icon-button page-arrow" aria-label="Página siguiente" title="Siguiente"><svg class="icon" aria-hidden="true"><use href="assets/icons.svg#arrow-right"></use></svg></button></nav></div>
+    </section>
+    <footer class="site-footer"><span>ELESOMI / LA CALIDAD POR LOS AIRES</span><span>GESTIÓN DE PASAJEROS</span></footer>
+  </main>
+  <div id="modal" class="modal-backdrop" hidden><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo"><div class="modal-head"><div><p class="kicker">ELESOMI / PASAJEROS</p><h2 id="modal-titulo">NUEVO PASAJERO</h2></div><button type="button" id="cerrar" class="icon-button modal-close" aria-label="Cerrar"><svg class="icon" aria-hidden="true"><use href="assets/icons.svg#close"></use></svg></button></div>
+    <form id="formulario"><input type="hidden" id="id"><div class="form-grid"><label>NOMBRES <span>*</span><input name="nombres" maxlength="80" minlength="2" required autocomplete="given-name"></label><label>APELLIDOS <span>*</span><input name="apellidos" maxlength="80" minlength="2" required autocomplete="family-name"></label><label>TIPO DE DOCUMENTO <span>*</span><select name="tipoDocumento" required><option value="CC">CÉDULA DE CIUDADANÍA</option><option value="CE">CÉDULA DE EXTRANJERÍA</option><option value="PAS">PASAPORTE</option><option value="TI">TARJETA DE IDENTIDAD</option></select></label><label>NÚMERO DE DOCUMENTO <span>*</span><input name="numeroDocumento" maxlength="25" minlength="4" required pattern="[A-Za-z0-9-]{4,25}"></label><label>FECHA DE NACIMIENTO <span>*</span><input name="fechaNacimiento" type="date" required></label><label>NACIONALIDAD<input name="nacionalidad" maxlength="60"></label><label>CORREO ELECTRÓNICO<input name="correo" type="email" maxlength="120" autocomplete="email"></label><label>TELÉFONO<input name="telefono" maxlength="25" autocomplete="tel"></label></div>
+      <p id="form-error" class="error" role="alert" hidden></p><div class="form-actions"><button id="cancelar" type="button" class="button button-secondary">CANCELAR</button><button id="guardar" type="submit" class="button button-primary">GUARDAR PASAJERO</button></div></form>
+  </section></div>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</body></html>

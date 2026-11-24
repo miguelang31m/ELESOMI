@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg"><defs>
+<symbol id="plus" viewBox="0 0 24 24"><path d="M12 4v16M4 12h16"/></symbol>
+<symbol id="search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></symbol>
+<symbol id="edit" viewBox="0 0 24 24"><path d="M4 16.5V20h3.5L19.5 8l-3.5-3.5L4 16.5zM14.8 5.7l3.5 3.5"/></symbol>
+<symbol id="disable" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.7 5.7 18.3 18.3"/></symbol>
+<symbol id="arrow-left" viewBox="0 0 24 24"><path d="M19 12H5m7-7-7 7 7 7"/></symbol>
+<symbol id="arrow-right" viewBox="0 0 24 24"><path d="M5 12h14m-7-7 7 7-7 7"/></symbol>
+<symbol id="close" viewBox="0 0 24 24"><path d="M5 5l14 14M19 5 5 19"/></symbol>
+</defs></svg>

@@ -1,0 +1,15 @@
+digraph G {
+ graph [rankdir=LR, bgcolor="white", pad="0.25", nodesep="0.45", ranksep="0.65"];
+ node [shape=record, style="filled", fillcolor="#EFF5FB", color="#91B4D6", fontname="Arial", fontsize=11, fontcolor="#17395D"];
+ edge [color="#5A83AA", penwidth=1.2, arrowsize=0.8];
+ resource [label="{PasajeroResource|+ listar()\l+ buscar()\l+ crear()\l+ actualizar()\l+ desactivar()\l+ verificar()\l}"];
+ service [label="{PasajeroService|+ listar()\l+ contar()\l+ buscar()\l+ crear()\l+ actualizar()\l+ desactivar()\l+ verificar()\l}"];
+ dto [label="{DatosPasajero|+ aplicar(Pasajero)\l+ getTipoDocumento()\l+ getNumeroDocumento()\l}"];
+ entity [label="{Pasajero|id : Long\lnombres : String\lapellidos : String\ltipoDocumento : String\lnumeroDocumento : String\lfechaNacimiento : Date\lactivo : boolean\l}"];
+ err [label="{ErrorNegocio|estado : int\lcodigo : String\lmensaje : String\l}"];
+ resource -> service [label="delega"];
+ resource -> dto [label="construye"];
+ service -> entity [label="persiste"];
+ dto -> entity [label="aplica datos"];
+ service -> err [style=dashed,label="lanza"];
+}
