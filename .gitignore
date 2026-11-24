@@ -5,5 +5,4 @@ target/
 *.class
 *.war
 .env
-
 postgresql-*.jar

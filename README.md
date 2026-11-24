@@ -200,3 +200,17 @@ El repositorio incluye los documentos de diseño y especificación arquitectural
 Elena Vargas Grisales  
 Sofía Vásquez Espinal  
 Miguel Ángel Marín Otálvaro
+
+## Instalación automatizada en Windows
+
+Para una instalación local con Docker Desktop en ejecución, ejecutar desde la carpeta del proyecto:
+
+```powershell
+.\scripts\01_instalacion_docker.ps1
+```
+
+El script crea o reutiliza PostgreSQL, inicializa la base de datos si está vacía, ejecuta Maven y JUnit, configura el controlador y el recurso JDBC en Payara, y despliega el archivo WAR. Los datos existentes se conservan. Requiere los puertos locales 8080 y 5433 disponibles.
+
+## Evidencias de ejecución
+
+Las seis capturas de la aplicación, la API REST y los resultados JUnit están disponibles en `documentacion/evidencias/`. Se incluye el anexo `Evidencias_ELESOMI.pdf`.
