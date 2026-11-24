@@ -9,7 +9,6 @@
 - Sofía Vásquez Espinal
 - Miguel Ángel Marín Otálvaro
 
-**Versión:** 1.1.0
 
 ## Descripción
 
@@ -181,9 +180,9 @@ La especificación de las operaciones se encuentra en `documentacion/openapi.yam
 
 ## Verificación funcional
 
-La versión 1.1.0 se compiló correctamente y se ejecutó en Payara Server 5.2022.5 con PostgreSQL 16. En las comprobaciones locales se verificaron el registro, la edición, la búsqueda, la desactivación lógica, la consulta REST, la verificación de documentos existentes e inexistentes y la respuesta HTTP `404` para pasajeros no disponibles.
+El proyecto se compiló correctamente y se ejecutó en Payara Server 5.2022.5 con PostgreSQL 16. En las comprobaciones locales se verificaron el registro, la edición, la búsqueda, la desactivación lógica, la consulta REST, la verificación de documentos existentes e inexistentes y la respuesta HTTP `404` para pasajeros no disponibles.
 
-Las pruebas JUnit de la versión 1.1.0 registraron los siguientes resultados:
+Las pruebas JUnit del proyecto registraron los siguientes resultados:
 
 - `PasajeroTest`: 4 pruebas, 0 fallos, 0 errores.
 - `DatosPasajeroTest`: 12 pruebas, 0 fallos, 0 errores.
