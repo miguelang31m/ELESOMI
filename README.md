@@ -1,37 +1,76 @@
-# ELESOMI - La calidad por los aires
+# ELESOMI
 
-Proyecto académico de integración de software. Módulo de gestión de pasajeros.
+**La calidad por los aires**
 
-**Equipo:** Elena Vargas Grisales, Sofía Vásquez Espinal y Miguel.
+**Proyecto de integración de software - Módulo de Gestión de Pasajeros**
+
+**Integrantes**
+- Elena Vargas Grisales
+- Sofía Vásquez Espinal
+- Miguel Ángel Marín Otálvaro
 
 **Versión:** 1.1.0
 
+## Descripción
+
+ELESOMI es una aplicación web para gestionar pasajeros de una aerolínea. Permite registrar, consultar, buscar, editar y desactivar pasajeros. Expone servicios REST para que otros módulos puedan consultar los registros y verificar si un pasajero se encuentra activo.
+
+La solución utiliza Java EE 7, JAX-RS, JPA, PostgreSQL 16 y una interfaz web responsive con identidad visual propia. Se distribuye como archivo WAR para un servidor de aplicaciones compatible con Java EE.
+
 ## Funcionalidades
 
-- Interfaz responsive de estilo brutalista, negro, blanco y magenta.
-- Registro, búsqueda paginada, edición y desactivación lógica de pasajeros.
-- API REST JAX-RS de gestión y verificación para integrar otros módulos.
-- Validaciones de entrada, códigos HTTP de negocio y persistencia JPA en PostgreSQL.
-- Pruebas JUnit 4 y documentos de arquitectura.
+- Registro de pasajeros con validación de datos.
+- Consulta y búsqueda paginada de pasajeros.
+- Edición de datos personales.
+- Desactivación lógica sin eliminar el registro de la base de datos.
+- Verificación de pasajeros activos mediante tipo y número de documento.
+- API REST con respuestas JSON y códigos HTTP para errores de negocio.
+- Interfaz responsive ELESOMI con iconografía SVG.
 
-## Requisitos
+## Tecnologías
 
-- Docker Desktop para PostgreSQL 16 y para compilar con Maven dentro de contenedor.
-- Un servidor Java EE compatible, probado manualmente con Payara Server 5.2022.5.
-- PostgreSQL JDBC 42.7.4 para Payara.
-- PowerShell en Windows.
+- Java EE 7 y Java 8 como versión objetivo de compilación.
+- JAX-RS para la API REST.
+- JPA y transacciones JTA para persistencia.
+- PostgreSQL 16.
+- Payara Server 5.2022.5 como servidor de aplicaciones utilizado en las pruebas locales.
+- Maven para compilación y JUnit 4 para pruebas automatizadas.
+- Docker Desktop y Docker Compose para el entorno local.
 
-## Preparar PostgreSQL
+## Estructura del repositorio
 
-Desde PowerShell, ubicado en la raíz del proyecto, ejecutar por separado:
+- `src/main/java/` - Código Java, servicios, modelo y API REST.
+- `src/main/webapp/` - Interfaz web, estilos, JavaScript y recursos SVG.
+- `src/test/java/` - Pruebas JUnit.
+- `sql/` - Esquema PostgreSQL y datos de demostración.
+- `diagramas/` - Diagramas de arquitectura, componentes, entidad-relación, secuencia, despliegue y clases.
+- `documentacion/` - Diseño arquitectural, especificación arquitectural, plan de pruebas y contrato OpenAPI.
+- `presentacion/` - Presentación del proyecto en PowerPoint y PDF.
+- `scripts/` - Utilidades para configuración, despliegue y comprobaciones de la API.
+
+## Instalación local
+
+Los comandos siguientes se ejecutan en PowerShell desde la carpeta raíz del repositorio. Docker Desktop debe estar en ejecución.
+
+### 1. Iniciar PostgreSQL
 
 ```powershell
 docker compose up -d
 ```
 
-La base de datos se llama `aerolinea`, usuario `aerolinea`, contraseña local `aerolinea_dev`, puerto local `5433`. Es una configuración exclusiva de desarrollo. No publique esta contraseña en sistemas reales.
+La configuración de desarrollo utiliza:
 
-En la primera instalación ejecutar el esquema y luego los datos ficticios:
+- Base de datos: `aerolinea`
+- Usuario: `aerolinea`
+- Contraseña local: `aerolinea_dev`
+- Puerto del equipo: `5433`
+- Puerto dentro de Docker: `5432`
+
+Estas credenciales son exclusivamente de demostración y no deben utilizarse en entornos públicos.
+
+### 2. Crear el esquema y cargar datos de ejemplo
+
+Ejecutar los scripts en el siguiente orden sobre una base de datos nueva:
 
 ```powershell
 Get-Content .\sql\01_esquema_postgresql.sql -Raw | docker exec -i aerolinea-pasajeros-db psql -v ON_ERROR_STOP=1 -U aerolinea -d aerolinea
@@ -41,66 +80,123 @@ Get-Content .\sql\01_esquema_postgresql.sql -Raw | docker exec -i aerolinea-pasa
 Get-Content .\sql\02_datos_demo.sql -Raw | docker exec -i aerolinea-pasajeros-db psql -v ON_ERROR_STOP=1 -U aerolinea -d aerolinea
 ```
 
-No vuelva a ejecutar el script demo sobre una base que ya tiene esos documentos registrados.
+El script de datos de demostración está previsto para la carga inicial.
 
-## Compilar WAR con Maven en Docker
+### 3. Compilar y ejecutar las pruebas
+
+No es necesario instalar Maven globalmente si se utiliza su imagen Docker.
 
 ```powershell
 docker run --rm -v "${PWD}:/workspace" -w /workspace maven:3.9.11-eclipse-temurin-17 mvn -B clean package
 ```
 
-El WAR resultante queda en `target/aerolinea-pasajeros.war`.
+El archivo generado queda en `target/aerolinea-pasajeros.war`.
 
-## Ejecutar JUnit 4
+Para ejecutar solamente las pruebas automatizadas:
 
 ```powershell
 docker run --rm -v "${PWD}:/workspace" -w /workspace maven:3.9.11-eclipse-temurin-17 mvn -B test
 ```
 
-Las pruebas se ubican en `src/test/java`. La compilación y las pruebas de esta versión se deben verificar nuevamente en el entorno del estudiante. Una salida `BUILD SUCCESS` sin tests ejecutados no equivale a pruebas aprobadas.
+Los reportes de pruebas se generan en `target/surefire-reports/`.
 
-## Desplegar con Payara 5 en Docker
+### 4. Configurar Payara Server y PostgreSQL JDBC
 
-El proyecto requiere el recurso JNDI `jdbc/AerolineaDS` apuntando a PostgreSQL. Si es la primera instalación, los pasos son:
+Se utilizó la imagen Docker `payara/server-full:5.2022.5`. El servidor debe estar conectado a la red Docker creada por Compose, `aerolinea-pasajeros_default`, y tener publicado el puerto `8080`.
 
-1. Crear el contenedor Payara, conectándolo a la red `aerolinea-pasajeros_default` y publicando el puerto 8080.
-2. Descargar `postgresql-42.7.4.jar` desde Maven Central y copiarlo a `/opt/payara/appserver/glassfish/domains/domain1/lib/` dentro del contenedor. Reiniciar Payara.
-3. Crear el pool JDBC `AerolineaPool` con `org.postgresql.ds.PGSimpleDataSource`, host `aerolinea-pasajeros-db`, puerto `5432`, base `aerolinea` y credenciales de desarrollo.
-4. Ejecutar `ping-connection-pool AerolineaPool` y crear `jdbc/AerolineaDS` apuntando al pool.
-5. Desplegar el WAR con `asadmin deploy --force=true`.
+Ejemplo de inicio del contenedor desde la raíz del proyecto:
 
-El procedimiento exacto ya fue verificado manualmente en la versión base. La configuración administrativa del servidor y el driver copiado dentro del contenedor se pierden si ese contenedor se elimina, salvo que se persistan o automaticen.
+```powershell
+docker run -d --name aerolinea-pasajeros-app --network aerolinea-pasajeros_default -p 8080:8080 payara/server-full:5.2022.5
+```
 
-La interfaz abre en:
+Descargar el controlador JDBC de PostgreSQL y copiarlo al directorio de librerías del dominio:
+
+```powershell
+curl.exe -L --fail -o postgresql-42.7.4.jar https://repo.maven.apache.org/maven2/org/postgresql/postgresql/42.7.4/postgresql-42.7.4.jar
+```
+
+```powershell
+docker cp .\postgresql-42.7.4.jar aerolinea-pasajeros-app:/opt/payara/appserver/glassfish/domains/domain1/lib/postgresql-42.7.4.jar
+```
+
+```powershell
+docker restart aerolinea-pasajeros-app
+```
+
+Una vez iniciado el servidor, crear el pool JDBC y verificar la conexión:
+
+```powershell
+docker exec aerolinea-pasajeros-app /opt/payara/appserver/bin/asadmin --user admin --passwordfile /opt/payara/passwordFile create-jdbc-connection-pool --datasourceclassname org.postgresql.ds.PGSimpleDataSource --restype javax.sql.DataSource --property 'serverName=aerolinea-pasajeros-db:portNumber=5432:databaseName=aerolinea:user=aerolinea:password=aerolinea_dev' AerolineaPool
+```
+
+```powershell
+docker exec aerolinea-pasajeros-app /opt/payara/appserver/bin/asadmin --user admin --passwordfile /opt/payara/passwordFile ping-connection-pool AerolineaPool
+```
+
+Registrar el recurso JNDI que utiliza `persistence.xml`:
+
+```powershell
+docker exec aerolinea-pasajeros-app /opt/payara/appserver/bin/asadmin --user admin --passwordfile /opt/payara/passwordFile create-jdbc-resource --connectionpoolid AerolineaPool jdbc/AerolineaDS
+```
+
+### 5. Desplegar la aplicación
+
+Copiar el WAR a una ruta temporal del contenedor:
+
+```powershell
+docker cp .\target\aerolinea-pasajeros.war aerolinea-pasajeros-app:/tmp/aerolinea-pasajeros.war
+```
+
+Desplegarlo con el contexto correspondiente:
+
+```powershell
+docker exec aerolinea-pasajeros-app /opt/payara/appserver/bin/asadmin --user admin --passwordfile /opt/payara/passwordFile deploy --force=true --name aerolinea-pasajeros --contextroot aerolinea-pasajeros /tmp/aerolinea-pasajeros.war
+```
+
+En una instalación nueva, ejecutar el despliegue cuando Payara haya terminado de iniciar y el recurso `jdbc/AerolineaDS` esté disponible.
+
+## Acceso a la aplicación
+
+Interfaz web:
 
 `http://localhost:8080/aerolinea-pasajeros/`
 
-La API abre en:
+API REST:
 
 `http://localhost:8080/aerolinea-pasajeros/api/pasajeros`
 
-## Contrato REST
+## Servicios REST
 
-- `GET /api/pasajeros?q=&pagina=1&tamano=10` - Consulta paginada.
-- `GET /api/pasajeros/{id}` - Obtiene un pasajero activo por ID.
-- `GET /api/pasajeros/verificar?tipoDocumento=CC&numeroDocumento=1000001001` - Consulta existencia de pasajero activo.
-- `POST /api/pasajeros` - Crea pasajero.
-- `PUT /api/pasajeros/{id}` - Actualiza pasajero.
-- `DELETE /api/pasajeros/{id}` - Desactiva pasajero.
+| Método | Ruta | Descripción |
+| --- | --- | --- |
+| GET | `/api/pasajeros?q=&pagina=1&tamano=10` | Consultar pasajeros con filtros y paginación |
+| GET | `/api/pasajeros/{id}` | Obtener un pasajero activo |
+| GET | `/api/pasajeros/verificar?tipoDocumento=CC&numeroDocumento=1000001001` | Verificar un pasajero activo |
+| POST | `/api/pasajeros` | Registrar un pasajero |
+| PUT | `/api/pasajeros/{id}` | Actualizar información |
+| DELETE | `/api/pasajeros/{id}` | Desactivar un pasajero |
 
-El contrato detallado se encuentra en `documentacion/openapi.yaml`.
+La especificación de las operaciones se encuentra en `documentacion/openapi.yaml`.
 
-## Contenido para entregar
+## Verificación funcional
 
-- `src/` - Código fuente Java EE, frontend y pruebas.
-- `sql/` - Esquema y datos de demostración.
-- `diagramas/` - Arquitectura, componentes, entidad-relación, secuencia, despliegue y clases.
-- `documentacion/` - Dos documentos de arquitectura en Word y PDF, plan de pruebas y OpenAPI.
-- `presentacion/` - Presentación final en PowerPoint y PDF.
-- `scripts/` - Scripts auxiliares de configuración y smoke test.
+La versión 1.1.0 se compiló correctamente y se ejecutó en Payara Server 5.2022.5 con PostgreSQL 16. En las comprobaciones locales se verificaron el registro, la edición, la búsqueda, la desactivación lógica, la consulta REST, la verificación de documentos existentes e inexistentes y la respuesta HTTP `404` para pasajeros no disponibles.
 
-## Evidencia funcional
+Las pruebas JUnit de la versión 1.1.0 registraron los siguientes resultados:
 
-En una ejecución local de la versión 1.0.0 se comprobó la compilación WAR, el despliegue en Payara 5, la conectividad JDBC con PostgreSQL, la creación, edición, búsqueda y desactivación de pasajeros; la verificación REST con documentos existentes e inexistentes; y una respuesta JSON 404 controlada.
+- `PasajeroTest`: 4 pruebas, 0 fallos, 0 errores.
+- `DatosPasajeroTest`: 12 pruebas, 0 fallos, 0 errores.
+- Total: 16 pruebas, 0 fallos, 0 errores y 0 omitidas.
 
-**Pendientes antes de la entrega final:** ejecutar Maven JUnit sobre 1.1.0, volver a desplegar el WAR para validar el frontend nuevo, registrar evidencias reales y confirmar con el profesor qué otros módulos participarán en la integración. No se ha comprobado una integración externa entre grupos.
+Estas pruebas cubren el modelo y la validación de datos. Las operaciones integradas con PostgreSQL y Payara se comprobaron mediante pruebas funcionales locales.
+
+## Documentación del proyecto
+
+El repositorio incluye los documentos de diseño y especificación arquitectural en formatos Word y PDF, diagramas técnicos, plan de pruebas, contrato OpenAPI, scripts SQL y presentación académica.
+
+## Equipo de desarrollo
+
+Elena Vargas Grisales  
+Sofía Vásquez Espinal  
+Miguel Ángel Marín Otálvaro
